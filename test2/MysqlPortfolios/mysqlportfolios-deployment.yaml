@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mysqlportfolios
+  name: mysqlportfolios
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqlportfolios
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysqlportfolios
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_DATABASE
+          value: portfolios
+        - name: MYSQL_PASSWORD
+          value: dummy
+        - name: MYSQL_ROOT_PASSWORD
+          value: dummy
+        - name: MYSQL_USER
+          value: sudheesh
+        image: mysql:5
+        name: mysqlportfolios
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-portfoliosdatabase-data-volume
+      restartPolicy: Always
+      volumes:
+      - name: mysql-portfoliosdatabase-data-volume
+        persistentVolumeClaim:
+          claimName: mysql-portfoliosdatabase-data-volume
